@@ -1,6 +1,6 @@
 # Vaultic SDK - Frontend End-to-End Encryption
 
-[![npm version](https://badge.fury.io/js/@vaultic/sdk.svg)](https://badge.fury.io/js/@vaultic/sdk)
+[![npm version](https://badge.fury.io/js/@vaultic%2Fsdk.svg)](https://badge.fury.io/js/@vaultic%2Fsdk)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 🔐 **Enterprise-Grade Frontend E2E Encryption with Zero-Knowledge Security**
