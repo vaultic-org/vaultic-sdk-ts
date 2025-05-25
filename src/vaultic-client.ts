@@ -1,7 +1,7 @@
 // VaulticClient - Main SDK class
 // CRITICAL: ALL operations require server validation - no offline functionality
 
-import { EventEmitter } from 'events';
+import { EventEmitter } from './utils/event-emitter';
 import {
     VaulticConfig,
     Status,
