@@ -39,16 +39,17 @@
   "license": "MIT",
   "dependencies": {
     "dexie": "^3.2.7",
-    "zod": "^3.25.23"
+    "zod": "^3.25.28"
   },
   "devDependencies": {
     "@types/node": "^20.17.50",
-    "@typescript-eslint/eslint-plugin": "^6.21.0",
-    "@typescript-eslint/parser": "^6.21.0",
+    "@typescript-eslint/eslint-plugin": "^7.18.0",
+    "@typescript-eslint/parser": "^7.18.0",
     "@vitest/coverage-v8": "^0.34.6",
-    "@vitest/ui": "^0.34.6",
+    "@vitest/ui": "^0.34.7",
+    "esbuild": "0.25.0",
     "eslint": "^8.57.1",
-    "jsdom": "^23.0.1",
+    "jsdom": "^23.2.0",
     "typescript": "^5.8.3",
     "vite": "^4.5.14",
     "vite-plugin-dts": "^3.9.1",

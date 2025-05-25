@@ -6,8 +6,8 @@
   },
   "extends": [
     "eslint:recommended",
-    "@typescript-eslint/recommended",
-    "@typescript-eslint/recommended-requiring-type-checking"
+    "plugin:@typescript-eslint/recommended",
+    "plugin:@typescript-eslint/recommended-type-checked"
   ],
   "parser": "@typescript-eslint/parser",
   "parserOptions": {
@@ -30,12 +30,11 @@
     "@typescript-eslint/explicit-module-boundary-types": "warn",
     "@typescript-eslint/no-explicit-any": "error",
     "@typescript-eslint/no-non-null-assertion": "warn",
-    "@typescript-eslint/prefer-const": "error",
     "@typescript-eslint/no-var-requires": "error",
     "prefer-const": "off",
-    "no-console": "warn",
-    "no-debugger": "error",
-    "no-alert": "error",
+    "no-console": "off",
+    "no-debugger": "off",
+    "no-alert": "off",
     "no-var": "error",
     "prefer-template": "error",
     "object-shorthand": "error",

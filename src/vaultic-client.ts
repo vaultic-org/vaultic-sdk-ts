@@ -532,7 +532,7 @@ export class VaulticClient extends EventEmitter {
         this.setStatus(Status.STOPPED);
         
         // Secure cleanup of sensitive data
-        await this.secureCleanup();
+        this.secureCleanup();
         
         this.currentUserId = null;
         this.userSecret = null;
@@ -544,7 +544,7 @@ export class VaulticClient extends EventEmitter {
     /**
      * Securely clean sensitive data from memory
      */
-    private async secureCleanup(): Promise<void> {
+    private secureCleanup(): void {
         try {
             // Clear user secret securely
             if (this.userSecret) {
@@ -563,8 +563,8 @@ export class VaulticClient extends EventEmitter {
             // (apiKey should not be wiped as it might be needed for reconnection)
 
             // Force garbage collection if available (non-standard)
-            if (typeof global !== 'undefined' && (global as any).gc) {
-                (global as any).gc();
+            if (typeof global !== 'undefined' && 'gc' in global && typeof (global as { gc?: () => void }).gc === 'function') {
+                (global as { gc: () => void }).gc();
             }
         } catch (error) {
             console.warn('[VAULTIC SDK] Secure cleanup encountered an error:', error);
@@ -766,7 +766,7 @@ export class VaulticClient extends EventEmitter {
 
     private extractResourceId(encryptedData: Uint8Array): string {
         // Simplified extraction for demo - real implementation would parse the encrypted format
-        return 'resource_' + this.bufferToBase64(encryptedData.slice(0, 16));
+        return `resource_${  this.bufferToBase64(encryptedData.slice(0, 16))}`;
     }
 }
 

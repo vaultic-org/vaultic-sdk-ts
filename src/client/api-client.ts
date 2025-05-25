@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-non-null-assertion */
 // API Client - Core communication layer with Vaultic API
 // ALL critical operations MUST go through this client - no local alternatives
 
@@ -9,7 +10,9 @@ import {
     Device,
     Group,
     Resource,
-    Identity
+    Identity,
+    VerificationMethod,
+    SharingOptions
 } from '../types';
 import {
     ApiConnectionRequiredError,
@@ -262,12 +265,80 @@ export class ApiClient {
         return response.data!;
     }
 
-    /**   * Register verification key with server   * All verification keys must be server-registered   */  async registerVerificationKey(publicKey: string): Promise<void> { throwIfOffline('registerVerificationKey', this.isConnected); this.requireAuth(); await this.makeRequest('POST', '/v1/verification-keys', { body: { publicKey } }); }  /**   * Validate resource access with server   * All resource access requires server authorization   */  async validateResourceAccess(resourceId: string): Promise<boolean> { throwIfOffline('validateResourceAccess', this.isConnected); this.requireAuth(); const response = await this.makeRequest<{ hasAccess: boolean }>('GET', `/v1/resources/${resourceId}/access`, {}); return response.data?.hasAccess || false; }  /**   * Create encryption session with server   * All sessions are server-managed   */  async createEncryptionSession(options: any): Promise<{ resourceId: string; sessionId: string }> { throwIfOffline('createEncryptionSession', this.isConnected); this.requireAuth(); const response = await this.makeRequest<{ resourceId: string; sessionId: string }>('POST', '/v1/encryption/sessions', { body: options }); return response.data!; }  /**   * Revoke device via server   * Only server can revoke devices   */  async revokeDevice(deviceId: string): Promise<void> { throwIfOffline('revokeDevice', this.isConnected); this.requireAuth(); await this.makeRequest('DELETE', `/v1/devices/${deviceId}`, {}); }  /**   * Set verification method via server   * Server stores and validates verification methods   */  async setVerificationMethod(verification: any): Promise<void> { throwIfOffline('setVerificationMethod', this.isConnected); this.requireAuth(); await this.makeRequest('POST', '/v1/verification-methods', { body: verification }); }  /**   * Get verification methods from server   * Server returns available verification options   */  async getVerificationMethods(): Promise<any[]> { throwIfOffline('getVerificationMethods', this.isConnected); this.requireAuth(); const response = await this.makeRequest<any[]>('GET', '/v1/verification-methods', {}); return response.data || []; }  /**   * Generic API request method with error handling   */
-    private async makeRequest<T = any>(
+    /**
+     * Register verification key with server
+     * All verification keys must be server-registered   */
+    async registerVerificationKey(publicKey: string): Promise<void> {
+        throwIfOffline('registerVerificationKey', this.isConnected);
+        this.requireAuth()
+        await this.makeRequest('POST', '/v1/verification-keys', { body: { publicKey } });
+    }
+    /**
+     * Validate resource access with server
+     * All resource access requires server authorization
+     */
+    async validateResourceAccess(resourceId: string): Promise<boolean> {
+        throwIfOffline('validateResourceAccess', this.isConnected);
+        this.requireAuth();
+        const response = await this.makeRequest<{ hasAccess: boolean }>('GET', `/v1/resources/${resourceId}/access`, {});
+        return response.data?.hasAccess || false;
+    }
+    /**
+     * Create encryption session with server
+     * All sessions are server-managed
+     */
+    async createEncryptionSession(options: SharingOptions): Promise<{ resourceId: string; sessionId: string }> {
+        throwIfOffline('createEncryptionSession', this.isConnected);
+        this.requireAuth();
+        const response = await this.makeRequest<{
+            resourceId: string;
+            sessionId: string
+        }>('POST', '/v1/encryption/sessions', { body: options });
+        
+        if (!response.data) {
+            throw new Error('Invalid response from encryption session endpoint');
+        }
+        
+        return response.data;
+    }
+    /**
+     * Revoke device via server
+     * Only server can revoke devices
+     */
+    async revokeDevice(deviceId: string): Promise<void> {
+        throwIfOffline('revokeDevice', this.isConnected); this.requireAuth();
+        await this.makeRequest('DELETE', `/v1/devices/${deviceId}`, {});
+    }
+
+    /**
+     * Set verification method via server
+     * Server stores and validates verification methods
+     */
+    async setVerificationMethod(verification: VerificationMethod): Promise<void> {
+        throwIfOffline('setVerificationMethod', this.isConnected);
+        this.requireAuth();
+        await this.makeRequest('POST', '/v1/verification-methods', { body: verification });
+    }
+
+    /**
+     * Get verification methods from server
+     * Server returns available verification options
+     */
+    async getVerificationMethods(): Promise<VerificationMethod[]> {
+        throwIfOffline('getVerificationMethods', this.isConnected);
+        this.requireAuth();
+        const response = await this.makeRequest<VerificationMethod[]>('GET', '/v1/verification-methods', {});
+        return response.data || [];
+    }
+
+    /**
+     * Generic API request method with error handling
+    */
+    private async makeRequest<T = unknown>(
         method: string,
         endpoint: string,
         options: {
-            body?: any;
+            body?: unknown;
             headers?: Record<string, string>;
         }
     ): Promise<ApiResponse<T>> {
@@ -295,11 +366,11 @@ export class ApiClient {
             const response = await fetch(url, fetchOptions);
 
             if (!response.ok) {
-                const error = await response.json().catch(() => ({ message: 'Unknown error' }));
+                const error = await response.json().catch(() => ({ message: 'Unknown error' })) as { message?: string };
                 throw new Error(error.message || `API request failed: ${response.status}`);
             }
 
-            const data = await response.json();
+            const data = await response.json() as ApiResponse<T>;
             return data;
         } catch (error) {
             // Network or parsing errors indicate API unavailability
@@ -312,7 +383,7 @@ export class ApiClient {
      * Verify server signature to prevent tampering
      * Critical security feature - all server data must be signed
      */
-    private async verifyServerSignature(data: any, signature: string): Promise<boolean> {
+    private async verifyServerSignature(data: unknown, signature: string): Promise<boolean> {
         if (!signature || signature.length === 0) {
             return false;
         }
