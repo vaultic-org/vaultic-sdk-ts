@@ -1,10 +1,15 @@
 {
   "name": "@vaultic/sdk",
+  "type": "module",
   "version": "1.0.0",
   "description": "A robust and clear client-side SDK for advanced cryptographic functionalities with end-to-end encryption support",
   "main": "dist/index.cjs",
   "module": "dist/index.js",
   "types": "dist/index.d.ts",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/vaultic-org/vaultic-sdk-ts.git"
+  },
   "exports": {
     ".": {
       "import": "./dist/index.js",
