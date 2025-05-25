@@ -316,7 +316,6 @@ try {
 
 - 📖 [Complete Documentation](https://docs.vaultic.app)
 - 🏗️ [Integration Examples](./examples/)
-- 💬 [Discord Community](https://discord.gg/vaultic)
 - 📧 [Email Support](mailto:support@vaultic.app)
 
 ---
